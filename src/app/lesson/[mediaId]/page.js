@@ -19,23 +19,19 @@ const MediaDetail = ({ params }) => {
 
   return (
     <div className="container mx-auto p-6">
-      <h2 className="text-3xl font-bold text-gray-800 mb-6">
+      <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-6 text-center">
         {mediaItem.name}
       </h2>
-      {mediaItem.type === "video" ? (
-        <ReactPlayer
-          url={mediaItem.url}
-          controls
-          width="100%"
-          height="auto"
-          className="rounded-md overflow-hidden"
-        />
-      ) : (
-        <iframe
-          src={mediaItem.url}
-          title={mediaItem.name}
-          className="w-full h-96 rounded-md border border-gray-300"
-        />
+      {mediaItem.type === "video" && (
+        <div className="aspect-w-16 aspect-h-9 mb-6">
+          <ReactPlayer
+            url={mediaItem.url}
+            controls
+            width="100%"
+            height="100%"
+            className="rounded-lg overflow-hidden"
+          />
+        </div>
       )}
     </div>
   );
