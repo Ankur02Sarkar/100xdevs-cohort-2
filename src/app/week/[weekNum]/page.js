@@ -25,17 +25,20 @@ const WeekDetail = ({ params }) => {
 
   return (
     <div className="container mx-auto p-6">
-      <h2 className="text-3xl font-bold text-gray-800 mb-6">
+      <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-6 text-center">
         {weekData.title}
       </h2>
-      <div className="space-y-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {weekData.media.map((media, index) => (
           <div
             key={index}
-            className="bg-white p-6 rounded-lg shadow-lg cursor-pointer"
+            className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg transform hover:scale-105 transition-transform cursor-pointer"
             onClick={() => handleMediaClick(media)}
           >
-            <h3 className="text-xl font-semibold mb-4">{media.name}</h3>
+            <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">
+              {media.name}
+            </h3>
+            {/* Additional content, such as media description or icons, can be added here */}
           </div>
         ))}
       </div>
