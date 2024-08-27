@@ -1,9 +1,15 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import CohortSelection from "@/components/CohortSelection";
 import Login from "@/components/Login";
 
 const Home = () => {
-  return <Login />;
+  const [authState, setAuthState] = useState(false);
+  return authState ? (
+    <CohortSelection setAuthState={setAuthState} />
+  ) : (
+    <Login setAuthState={setAuthState} />
+  );
 };
 
 export default Home;
