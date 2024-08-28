@@ -4,23 +4,49 @@ import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const router = useRouter();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (
-      email === process.env.NEXT_PUBLIC_ADMIN_EMAIL &&
-      password === process.env.NEXT_PUBLIC_ADMIN_PASS
-    ) {
-      setIsAuthenticated(true);
-      toast.success("Logged In");
-    } else {
-      toast.error("Wrong Credentials");
+    try {
+      const response = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
+      console.log({ response });
+      if (!response?.error) {
+        router.push("/");
+        router.refresh();
+      }
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      // Process response here
+      console.log("Login Successful", response);
+      toast.success("Login Successful");
+    } catch (error) {
+      console.error("Login Failed:", error);
+      toast.error(error.message);
     }
+
+    // if (
+    //   email === process.env.NEXT_PUBLIC_ADMIN_EMAIL &&
+    //   password === process.env.NEXT_PUBLIC_ADMIN_PASS
+    // ) {
+    //   setIsAuthenticated(true);
+    //   toast.success("Logged In");
+    // } else {
+    //   toast.error("Wrong Credentials");
+    // }
   };
 
   return (
