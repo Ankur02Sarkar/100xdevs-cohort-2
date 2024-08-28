@@ -10,17 +10,6 @@ export default function LoginForm() {
   const [password, setPassword] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Load the auth state from Chrome storage on component mount
-  useEffect(() => {
-    window?.chrome?.storage?.sync?.get("authState", (result) => {
-      console.log("result : ", result);
-      
-      if (result.authState) {
-        setIsAuthenticated(true);
-      }
-    });
-  }, []);
-
   const handleSubmit = (e) => {
     e.preventDefault();
     if (
@@ -28,10 +17,7 @@ export default function LoginForm() {
       password === process.env.NEXT_PUBLIC_ADMIN_PASS
     ) {
       setIsAuthenticated(true);
-      // Store auth state in Chrome storage sync
-      window?.chrome?.storage?.sync?.set({ authState: true }, () => {
-        toast.success("Logged In");
-      });
+      toast.success("Logged In");
     } else {
       toast.error("Wrong Credentials");
     }
