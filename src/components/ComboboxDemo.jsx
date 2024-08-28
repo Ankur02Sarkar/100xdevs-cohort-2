@@ -63,7 +63,7 @@ export function ComboboxDemo() {
         <Command>
           <CommandInput placeholder="Search Lesson..." />
           <CommandList>
-            <CommandEmpty>No framework found.</CommandEmpty>
+            <CommandEmpty>No Lesson found.</CommandEmpty>
             <CommandGroup>
               {frameworks.map((framework) => (
                 <CommandItem
