@@ -1,25 +1,42 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
-export default function LoginForm({ setAuthState }) {
+export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // Load the auth state from Chrome storage on component mount
+  useEffect(() => {
+    window?.chrome?.storage?.sync?.get("authState", (result) => {
+      console.log("result : ", result);
+      
+      if (result.authState) {
+        setIsAuthenticated(true);
+      }
+    });
+  }, []);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (
       email === process.env.NEXT_PUBLIC_ADMIN_EMAIL &&
       password === process.env.NEXT_PUBLIC_ADMIN_PASS
     ) {
-      setAuthState(true);
-      toast.success("Logged In");
+      setIsAuthenticated(true);
+      // Store auth state in Chrome storage sync
+      window?.chrome?.storage?.sync?.set({ authState: true }, () => {
+        toast.success("Logged In");
+      });
     } else {
-      toast.error("Wrong Credetials");
+      toast.error("Wrong Credentials");
     }
   };
+
   return (
     <div className="max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black z-10">
       <h2 className="font-bold text-xl text-neutral-800 dark:text-neutral-200 text-center">

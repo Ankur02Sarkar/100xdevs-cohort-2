@@ -13,6 +13,7 @@ import {
 import Image from "next/image";
 import logoDark from "@/app/assets/logo-dark.png";
 import { Input } from "./ui/input";
+import { ComboboxDemo } from "./ComboboxDemo";
 
 export function FloatingDockDemo() {
   const links = [
@@ -53,8 +54,8 @@ export function FloatingDockDemo() {
     },
   ];
   return (
-    <div className="flex items-center justify-center absolute bottom-0 w-full flex-col">
-      <Input />
+    <div className="flex items-center justify-center fixed bottom-0 w-full flex-col gap-4">
+      <ComboboxDemo />
       <FloatingDock mobileClassName="translate-y-20" items={links} />
     </div>
   );
