@@ -14,8 +14,10 @@ import Image from "next/image";
 import logoDark from "@/app/assets/logo-dark.png";
 import { Input } from "./ui/input";
 import { ComboboxDemo } from "./ComboboxDemo";
+import { useAuth } from "@/hooks/useAuth";
 
 export function FloatingDockDemo() {
+  const isAuthenticated = useAuth();
   const links = [
     {
       title: "Home",
@@ -23,13 +25,6 @@ export function FloatingDockDemo() {
         <IconHome className="h-full w-full text-neutral-500 dark:text-neutral-300" />
       ),
       href: "/",
-    },
-    {
-      title: "Classx Website",
-      icon: (
-        <IconTerminal2 className="h-full w-full text-neutral-500 dark:text-neutral-300" />
-      ),
-      href: "https://harkirat.classx.co.in/",
     },
     {
       title: "Github Repo",
@@ -52,11 +47,22 @@ export function FloatingDockDemo() {
       ),
       href: "https://app.100xdevs.com/courses/13",
     },
+    {
+      title: "Logout",
+      icon: (
+        <IconTerminal2 className="h-full w-full text-neutral-500 dark:text-neutral-300" />
+      ),
+      href: "#",
+    },
   ];
   return (
     <div className="flex items-center justify-center fixed bottom-0 w-full flex-col gap-4">
-      <ComboboxDemo />
-      <FloatingDock mobileClassName="translate-y-20" items={links} />
+      {isAuthenticated && (
+        <>
+          <ComboboxDemo />
+          <FloatingDock mobileClassName="translate-y-20" items={links} />
+        </>
+      )}
     </div>
   );
 }
