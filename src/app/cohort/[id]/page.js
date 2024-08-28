@@ -1,15 +1,25 @@
 "use client";
 import { cohort2Data } from "@/app/assets/data";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import RestrictedPage from "@/components/RestrictedPage";
 
-const CourseDisplay = () => {
+const CourseDisplay = ({params}) => {
   const isAuthenticated = useAuth();
-  const [mediaData, setMediaData] = useState(cohort2Data);
+  const [mediaData, setMediaData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const router = useRouter();
+  const { id } = params;
+
+  useEffect(() => {
+    const cohortFilter = id === "1-100" ? "1-100" : id === "0-1" ? "0-1" : "";
+    const filteredData = cohort2Data.map(week => ({
+      ...week,
+      media: week.media.filter(item => item.cohort === cohortFilter)
+    })).filter(week => week.media.length > 0);
+    setMediaData(filteredData);
+  }, [id]);
 
   const handleWeekClick = (weekNum) => {
     router.push(`/week/${weekNum}`);
@@ -28,7 +38,7 @@ const CourseDisplay = () => {
       {isAuthenticated ? (
         <>
           <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-6 text-center">
-            Course Materials
+            Course Materials (Cohort {id})
           </h2>
           <div className="mb-8 flex justify-center">
             <input
@@ -50,7 +60,9 @@ const CourseDisplay = () => {
                   <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">
                     {week.title}
                   </h3>
-                  {/* Additional content can be added here, such as a description or media preview */}
+                  <p className="text-gray-600 dark:text-gray-400">
+                    {week.media.length} items
+                  </p>
                 </div>
               ))
             ) : (
