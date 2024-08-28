@@ -18,33 +18,31 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { cohort2Data } from "@/app/assets/data";
+import { useRouter } from "next/navigation";
 
 const frameworks = [
-  {
-    value: "next.js",
-    label: "Next.js",
-  },
-  {
-    value: "sveltekit",
-    label: "SvelteKit",
-  },
-  {
-    value: "nuxt.js",
-    label: "Nuxt.js",
-  },
-  {
-    value: "remix",
-    label: "Remix",
-  },
-  {
-    value: "astro",
-    label: "Astro",
-  },
+  ...cohort2Data.flatMap((week) =>
+    week.media.map((item) => ({
+      value: item.id.toString(),
+      label: item.name,
+      type: item.type,
+      url: item.url,
+    }))
+  ),
 ];
 
 export function ComboboxDemo() {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");
+  const router = useRouter();
+  const gotoLesson = (lesson) => {
+    if (lesson.type === "document") {
+      window.open(lesson.url, "_blank");
+    } else {
+      router.push(`/lesson/${lesson.value}`);
+    }
+  };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -70,19 +68,15 @@ export function ComboboxDemo() {
               {frameworks.map((framework) => (
                 <CommandItem
                   key={framework.value}
-                  value={framework.value}
+                  value={framework.label}
                   onSelect={(currentValue) => {
                     setValue(currentValue === value ? "" : currentValue);
                     setOpen(false);
                   }}
                 >
-                  <Check
-                    className={cn(
-                      "mr-2 h-4 w-4",
-                      value === framework.value ? "opacity-100" : "opacity-0"
-                    )}
-                  />
-                  {framework.label}
+                  <h2 className="w-full" onClick={() => gotoLesson(framework)}>
+                    {framework.label}
+                  </h2>
                 </CommandItem>
               ))}
             </CommandGroup>
