@@ -5,8 +5,8 @@ import Login from "@/components/Login";
 import { useAuth } from "@/hooks/useAuth";
 
 const Home = () => {
-  const isAuthenticated = useAuth();
-  return isAuthenticated ? <CohortSelection /> : <Login />;
+  const { isAdmin } = useAuth();
+  return isAdmin ? <CohortSelection /> : <Login />;
 };
 
 export default Home;

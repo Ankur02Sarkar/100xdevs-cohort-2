@@ -4,53 +4,97 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import RestrictedPage from "@/components/RestrictedPage";
 import { useAuth } from "@/hooks/useAuth";
+import { useSession } from "next-auth/react";
 
 const WeekDetail = ({ params }) => {
   const weekNum = params.weekNum;
   const [weekData, setWeekData] = useState(null);
   const [watchedMedia, setWatchedMedia] = useState({});
   const router = useRouter();
-  const isAuthenticated = useAuth();
+  const { isAdmin, userId } = useAuth();
 
   useEffect(() => {
     const selectedWeek = cohort2Data[parseInt(weekNum)];
     setWeekData(selectedWeek);
 
-    // Retrieve watched media from local storage
-    const storedWatchedMedia = localStorage.getItem("watchedMedia");
-    if (storedWatchedMedia) {
-      setWatchedMedia(JSON.parse(storedWatchedMedia));
-    }
-  }, [weekNum]);
+    // Fetch watched media from API route
+    const fetchWatchedMedia = async () => {
+      try {
+        const response = await fetch(`/api/watchedMedia?userId=${userId}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch watched media");
+        }
+        const data = await response.json();
+        setWatchedMedia(data);
+      } catch (error) {
+        console.error("Error fetching watched media:", error);
+      }
+    };
 
-  const handleMediaClick = (media) => {
+    if (isAdmin) {
+      fetchWatchedMedia();
+    }
+  }, [weekNum, isAdmin]);
+
+  const handleMediaClick = async (media) => {
     if (media.type === "document") {
       window.open(media.url, "_blank");
     } else {
       router.push(`/lesson/${media.id}`);
     }
 
-    // Check the box when clicking anywhere on the div
-    const updatedWatchedMedia = { ...watchedMedia, [media.id]: true };
-    setWatchedMedia(updatedWatchedMedia);
-    localStorage.setItem("watchedMedia", JSON.stringify(updatedWatchedMedia));
+    // Update watched status via API route
+    try {
+      const response = await fetch("/api/watchedMedia", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId,
+          mediaId: media.id,
+          watched: true,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to update watched media");
+      }
+      setWatchedMedia((prev) => ({ ...prev, [media.id]: true }));
+    } catch (error) {
+      console.error("Error updating watched media:", error);
+    }
   };
 
-  const handleCheckboxClick = (e, mediaId) => {
+  const handleCheckboxClick = async (e, mediaId) => {
     e.stopPropagation();
-    const updatedWatchedMedia = { ...watchedMedia };
-    updatedWatchedMedia[mediaId] = !updatedWatchedMedia[mediaId];
-    setWatchedMedia(updatedWatchedMedia);
+    const newWatchedStatus = !watchedMedia[mediaId];
 
-    // Store updated watched media in local storage
-    localStorage.setItem("watchedMedia", JSON.stringify(updatedWatchedMedia));
+    try {
+      const response = await fetch("/api/watchedMedia", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId,
+          mediaId,
+          watched: newWatchedStatus,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to update watched media");
+      }
+      setWatchedMedia((prev) => ({ ...prev, [mediaId]: newWatchedStatus }));
+    } catch (error) {
+      console.error("Error updating watched media:", error);
+    }
   };
 
   if (!weekData) return <div>Loading...</div>;
 
   return (
     <div className="container mx-auto p-6">
-      {isAuthenticated ? (
+      {isAdmin ? (
         <>
           <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-6 text-center">
             {weekData.title}

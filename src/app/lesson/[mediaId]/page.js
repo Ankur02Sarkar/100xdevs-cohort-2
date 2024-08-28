@@ -6,7 +6,7 @@ import React, { useState, useEffect } from "react";
 import ReactPlayer from "react-player";
 
 const MediaDetail = ({ params }) => {
-  const isAuthenticated = useAuth();
+  const { isAdmin } = useAuth();
   const mediaId = params.mediaId;
   const [mediaItem, setMediaItem] = useState(null);
 
@@ -22,7 +22,7 @@ const MediaDetail = ({ params }) => {
 
   return (
     <div className="container mx-auto p-6">
-      {isAuthenticated ? (
+      {isAdmin ? (
         <>
           <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-6 text-center">
             {mediaItem.name}

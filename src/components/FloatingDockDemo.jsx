@@ -17,7 +17,7 @@ import { ComboboxDemo } from "./ComboboxDemo";
 import { useAuth } from "@/hooks/useAuth";
 
 export function FloatingDockDemo() {
-  const isAuthenticated = useAuth();
+  const { isAdmin } = useAuth();
   const links = [
     {
       title: "Home",
@@ -57,7 +57,7 @@ export function FloatingDockDemo() {
   ];
   return (
     <div className="flex items-center justify-center fixed bottom-0 w-full flex-col gap-4">
-      {isAuthenticated && (
+      {isAdmin && (
         <>
           <ComboboxDemo />
           <FloatingDock mobileClassName="translate-y-20" items={links} />

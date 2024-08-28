@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import RestrictedPage from "@/components/RestrictedPage";
 
-const CourseDisplay = ({params}) => {
-  const isAuthenticated = useAuth();
+const CourseDisplay = ({ params }) => {
+  const { isAdmin } = useAuth();
   const [mediaData, setMediaData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const router = useRouter();
@@ -14,10 +14,12 @@ const CourseDisplay = ({params}) => {
 
   useEffect(() => {
     const cohortFilter = id === "1-100" ? "1-100" : id === "0-1" ? "0-1" : "";
-    const filteredData = cohort2Data.map(week => ({
-      ...week,
-      media: week.media.filter(item => item.cohort === cohortFilter)
-    })).filter(week => week.media.length > 0);
+    const filteredData = cohort2Data
+      .map((week) => ({
+        ...week,
+        media: week.media.filter((item) => item.cohort === cohortFilter),
+      }))
+      .filter((week) => week.media.length > 0);
     setMediaData(filteredData);
   }, [id]);
 
@@ -35,7 +37,7 @@ const CourseDisplay = ({params}) => {
 
   return (
     <div className="container mx-auto p-6">
-      {isAuthenticated ? (
+      {isAdmin ? (
         <>
           <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-6 text-center">
             Course Materials (Cohort {id})

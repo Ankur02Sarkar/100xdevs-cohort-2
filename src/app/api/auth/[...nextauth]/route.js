@@ -8,6 +8,21 @@ const handler = NextAuth({
     strategy: "jwt",
   },
 
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (token) {
+        session.user.id = token.id;
+      }
+      return session;
+    },
+  },
+
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -17,6 +32,7 @@ const handler = NextAuth({
           SELECT * FROM users WHERE email=${credentials?.email}
         `;
         const user = response.rows[0];
+        console.log("user ", user);
 
         const passwordCorrect = await compare(
           credentials?.password || "",
