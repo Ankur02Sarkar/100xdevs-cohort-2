@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import RestrictedPage from "@/components/RestrictedPage";
 import { useAuth } from "@/hooks/useAuth";
-import { useSession } from "next-auth/react";
 
 const WeekDetail = ({ params }) => {
   const weekNum = params.weekNum;
