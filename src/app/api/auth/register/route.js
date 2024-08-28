@@ -9,10 +9,10 @@ export async function POST(request) {
 
     console.log({ email, password });
 
-    const hashedPassword = await hash(password, 10);
+    // const hashedPassword = await hash(password, 10);
 
-    const response =
-      await sql`INSERT INTO users (email, password) VALUES (${email}, ${hashedPassword})`;
+    // const response =
+    //   await sql`INSERT INTO users (email, password) VALUES (${email}, ${hashedPassword})`;
   } catch (e) {
     console.log({ e });
   }
